@@ -1,28 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:membership_card/model/card_model.dart';
 
 class CardCounter extends ChangeNotifier {
 
-  int _cardNumber = 1;
+  List<CardInfo> _cardList = List<CardInfo>();
 
-  CardCounter([this._cardNumber]);
+  set cardList(List<CardInfo> cardList) => this._cardList = cardList;
+  List<CardInfo> get cardList => _cardList;
 
-  set cardNumber(int cardNumber) => this._cardNumber = cardNumber;
-  int get cardNumber => _cardNumber;
-
-  void add() {
-    _cardNumber++;
+  void addCard(CardInfo cardInfo) {
+    _cardList.add(cardInfo);
     notifyListeners();
   }
 
-  void decrease() {
-    _cardNumber--;
-    assert(_cardNumber >= 0);
-    notifyListeners();
-  }
-
-  void decreaseWithNumber(int deNumber) {
-    _cardNumber -= deNumber;
-    assert(_cardNumber >= 0);
-    notifyListeners();
+  void deleteCard(CardInfo cardInfo) {
+    bool isRemoved = _cardList.remove(cardInfo);
+    if (!isRemoved) throw new Exception("Card Remove failed");
   }
 }

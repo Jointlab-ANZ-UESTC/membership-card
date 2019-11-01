@@ -1,10 +1,11 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:membership_card/pages/all_cards.dart';
 import 'package:membership_card/model/card_count.dart';
+import 'package:membership_card/pages/search.dart';
+import 'package:membership_card/pages/settings.dart';
 import 'package:provider/provider.dart';
 
-import 'model/card.dart';
+import 'model/card_model.dart';
 import 'pages/add_cards.dart';
 import 'pages/card_info.dart';
 
@@ -38,6 +39,8 @@ class GoWallet extends StatelessWidget {
         routes: {
           "/add" : (BuildContext context) => AddCardPage(),
           "/cardinfo" : (BuildContext context) => CardInfoPage(),
+          "/settings" : (BuildContext context) => SettingsPage(),
+          "/search" : (BuildContext context) => SearchPage(),
         },
       )
     );
