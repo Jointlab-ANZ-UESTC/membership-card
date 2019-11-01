@@ -1,102 +1,143 @@
 import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:membership_card/model/card_count.dart';
 import 'package:membership_card/model/card_model.dart';
+import 'package:membership_card/pages/add_cards_with_camera.dart';
+import 'package:membership_card/pages/add_cards_with_number.dart';
+import 'package:membership_card/pages/card_info.dart';
+import 'package:membership_card/pages/help.dart';
 import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
 
-/// This is the All_Cards Page which is the center of the App.
+/// This is the All_Cards Page [AllCardsPage] which is the home of the App.
 /// It shows all the cards users created and users can also add cards
-/// in this page.
-/// Moreover, users can get into the setting page which
-/// users can set all the settings including username and passwords.
-/// When users click one card, it will go into the Card Info Page which
-/// contains all the card information
-class AllCards extends StatefulWidget {
+/// in this page. Every Card is called [CardInfo].
+/// One page showed four cards, every card has its information including
+/// cardName, cardStore, cardNotes
+/// When users click one card, it will go into the [CardInfoPage] which
+/// contains all detailed information one card has.
+/// Moreover, on the top-left users can click menu button to get [HelpPage]
+/// which contains all the information about how this app works.
+/// Add function is divided into two parts: [AddCardWithCameraPage] and
+/// [AddCardWithNumberPage]. [AddCardWithCameraPage] uses camera API to read
+/// cardNumber through bar code, while [AddCardWithNumberPage] needs user to
+/// write the cardNumber on his/her own.
+class AllCardsPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return AllCardsState();
+    return AllCardsPageState();
   }
 }
 
-/// This is the state related to the All_Cards Widget
-/// It is the main state of the All_Cards
-class AllCardsState extends State<AllCards> {
+/// This is the state related to the [AllCardsPage]
+/// It is the main state of the [AllCardsPage]
+class AllCardsPageState extends State<AllCardsPage> {
 
   // These are the network variables for network connection
   Response res;
   Dio dio = Dio(
-      BaseOptions(
-        //Todo: Need to get Server URL first
-          baseUrl: "***",
-          connectTimeout: 3000,
-          receiveTimeout: 3000,
-          receiveDataWhenStatusError: false,
-          sendTimeout: 3000
-      )
+    // This is the base options for Dio client to connect to server
+    BaseOptions(
+      //Todo: Need to get Server URL first
+      baseUrl: "129.204.110.90:8080",
+      connectTimeout: 3000,
+      receiveTimeout: 3000,
+      receiveDataWhenStatusError: false,
+      sendTimeout: 3000,
+    ),
   );
 
-  void getCardInfo() async {
+  void _getCardInfo() async {
     //Todo: Lost API from backend
-    res = await dio.get("/***");
+    res = await dio.get("/api/cards");
     Map<String, dynamic> data = jsonDecode(res.data.toString());
     Provider.of<CardCounter>(context).cardList = data["cardList"];
   }
 
   @override
   Widget build(BuildContext context) {
-//    getCardInfo();
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          //Todo: Should go into the Add Card Page
-//          Navigator.of(context).pushNamed("/add");
-          Provider.of<CardCounter>(context).addCard(CardInfo(
-            cardName: "My Card"
-          ));
-        },
-        tooltip: "Add new card",
-        backgroundColor: Colors.deepOrange,
-        child: Icon(
-          Icons.add,
-          size: 32.0,
-        ),
-      ),
+    _getCardInfo();
 
+    return Scaffold(
+
+      // App Bar lying on the top of the app
       appBar: AppBar(
+        // PopupMenuButton is used for popping one menu on the click button
+        leading: PopupMenuButton(
+            offset: Offset(0, AppBar().preferredSize.height),
+            itemBuilder: (_) => <PopupMenuItem<String>>[
+              PopupMenuItem(
+                child: ListTile(
+                  leading: Icon(Icons.help),
+                  title: Text("Help"),
+                  contentPadding: EdgeInsets.symmetric(vertical: 4.0),
+                ),
+                value: "help",)
+            ],
+            onSelected: (value) {
+              switch (value) {
+                case "help" :
+                  Navigator.of(context).pushNamed("/help");
+                  break;
+              }
+            },
+
+            //Todo: Icon should be redesigned because of the Picture
+            icon: Icon(Icons.account_balance, color: Colors.black, size: 32.0,)
+        ),
         title: Text(
-          "All Cards",
+          "GoWallet",
           textAlign: TextAlign.justify,
           style: TextStyle(
-              color: Colors.black
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
           ),
         ),
 
         backgroundColor: Colors.white,
 
-        bottomOpacity: 0,
-
         actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              //Todo: Should go into Setting Page
-              Navigator.of(context).pushNamed("/settings");
-            },
-            icon: Icon(Icons.settings),
-            color: Colors.black,
+          Consumer<CardCounter>(
+            builder: (context, counter, child) => PopupMenuButton(
+              offset: Offset(0, AppBar().preferredSize.height),
+              itemBuilder: (_) => <PopupMenuItem<String>> [
+                PopupMenuItem(
+                 child: ListTile(
+                   leading: Icon(Icons.camera),
+                   title: Text("camera"),
+                   contentPadding: EdgeInsets.symmetric(vertical: 4.0),
+                  ),
+                  value: "scan",
+                ),
+                PopupMenuItem(
+                  child: ListTile(
+                    leading: Icon(Icons.title),
+                    title: Text("hand"),
+                    contentPadding: EdgeInsets.symmetric(vertical: 4.0),
+                  ),
+                  value: "number",
+                )
+              ],
+              onSelected: (value) {
+                switch (value) {
+                  case "scan" :
+                    Navigator.of(context).pushNamed("/add/camera");
+                    //Todo: This is only a test, will delete in the future
+                    counter.cardList.add(CardInfo(
+                      cardName: "MyCard"
+                    ));
+                    break;
+                  case "number" :
+                    Navigator.of(context).pushNamed("/add/number");
+                    break;
+                }
+               },
+              icon: Icon(Icons.add, color: Colors.black, size: 32.0,),
+            )
           ),
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              //Todo: Should go into Search Page
-              Navigator.of(context).pushNamed("/search");
-            },
-            color: Colors.black,
-          )
-        ],
+        ]
       ),
 
       body: Consumer<CardCounter>(
@@ -113,20 +154,39 @@ class AllCardsState extends State<AllCards> {
             ),
           ) : GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              // It means how many cards one row can contain
+              crossAxisCount: 1,
 
-              //Todo: It should be set by user
-                crossAxisCount: 2,
-
-                childAspectRatio: 1.44
+              // It means width : height
+              childAspectRatio: 2.6,
             ),
 
             // it is defined by how many cards one user created
             itemCount: counter.cardList.length,
 
+            // This is the builder for Card Widget building
             itemBuilder: (BuildContext context, int index) {
               return Padding(
-                padding: const EdgeInsets.all(4.0),
+                padding: const EdgeInsets.all(1.0),
                 child: GridTile(
+
+                  //Todo: should be updated when UI gives pics
+                  header: ListTile(
+                    leading: Icon(
+                      Icons.account_balance_wallet,
+                      color: Colors.deepOrange,
+                    ),
+                    title: Text(
+                      //Todo: should be gotten from net
+                      "Starbuck",
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic
+                      ),
+                    ),
+                  ),
+
                   footer: Container(
                     color: Colors.transparent,
                     child: Text(
@@ -134,29 +194,26 @@ class AllCardsState extends State<AllCards> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  header: PopupMenuButton(
-                    //Todo: need to specify little menu button
-                  ),
+
                   child: RaisedButton(
-                      color: Colors.white70,
-                      onPressed: (){
-                        //Todo: Should go into the Card Info Page
-                        Navigator.of(context).pushNamed(
-                            "/cardinfo",
-                            arguments: {
-                              "index" : index
-                            }
-                        );
-                      },
-                      child: Text(
-                        //Todo: It should be gotten from net
-                        counter.cardList.elementAt(index).cardName,
-                        style: TextStyle(
-                          fontSize: 20.0,
-                        ),
-                        textAlign: TextAlign.center,
+                    color: Colors.white,
+                    onPressed: () {
+                      //Todo: Should go into the Card Info Page, and the args should be discussed
+                      Navigator.of(context).pushNamed(
+                        "/cardinfo",
+                        arguments: {
+                          "index" : index
+                        },
+                      );},
+                    child: Text(
+                      //Todo: It should be gotten from net
+                      counter.cardList.elementAt(index).cardName,
+                      style: TextStyle(
+                        fontSize: 20.0,
                       ),
+                      textAlign: TextAlign.center,
                     ),
+                  ),
                 )
               );
             },

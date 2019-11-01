@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:membership_card/pages/add_cards_with_camera.dart';
 import 'package:membership_card/pages/all_cards.dart';
 import 'package:membership_card/model/card_count.dart';
+import 'package:membership_card/pages/help.dart';
 import 'package:membership_card/pages/search.dart';
 import 'package:membership_card/pages/settings.dart';
 import 'package:provider/provider.dart';
 
 import 'model/card_model.dart';
-import 'pages/add_cards.dart';
+import 'pages/add_cards_with_number.dart';
 import 'pages/card_info.dart';
 
 void main() => runApp(GoWallet());
@@ -33,14 +35,17 @@ class GoWallet extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'GoWallet App',
-        home: AllCards(),
+        home: AllCardsPage(),
+        theme: ThemeData.light(),
 
         // routes defined all the page routes of our App
         routes: {
-          "/add" : (BuildContext context) => AddCardPage(),
-          "/cardinfo" : (BuildContext context) => CardInfoPage(),
-          "/settings" : (BuildContext context) => SettingsPage(),
-          "/search" : (BuildContext context) => SearchPage(),
+          "/add/number" : (_) => AddCardWithNumberPage(),
+          "/add/camera" : (_) => AddCardWithCameraPage(),
+          "/cardinfo" : (_) => CardInfoPage(),
+          "/settings" : (_) => SettingsPage(),
+          "/search" : (_) => SearchPage(),
+          "/help" : (_) => HelpPage(),
         },
       )
     );

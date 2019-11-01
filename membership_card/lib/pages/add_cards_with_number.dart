@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 /// If user wants to add one card, it needs to go into this page
 /// and write some information such as card number and card name to
 /// finish the card creating procedure
-class AddCardPage extends StatefulWidget {
+class AddCardWithNumberPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return AddCardPageState();
+    return AddCardWithNumberState();
   }
 }
 
-class AddCardPageState extends State<AddCardPage> {
+class AddCardWithNumberState extends State<AddCardWithNumberPage> {
 
   @override
   Widget build(BuildContext context) {
