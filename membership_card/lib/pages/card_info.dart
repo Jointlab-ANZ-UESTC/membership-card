@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'model/card.dart';
+import '../model/card.dart';
 
-/// This is the Card_Info Page showing one card's information
-/// It should include one card's all the information here
+/// This is the Card_Info Page showing one card's information.
+/// It should include one card's all the information here.
 class CardInfoPage extends StatefulWidget {
 
   @override
@@ -20,15 +20,17 @@ class CardInfoState extends State<CardInfoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
+          color: Colors.black,
         ),
-        //Todo: Add more UI for App bar here
+        //Todo: Add more UI for App bar from here
       ),
-      //Todo: Add more UI about Card Info here
+      //Todo: Add more UI about Card Info from here
     );
   }
 }
