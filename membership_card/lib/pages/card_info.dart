@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'model/card.dart';
+import '../model/card_model.dart';
 
-/// This is the Card_Info Page showing one card's information
-/// It should include one card's all the information here
+/// This is the Card_Info Page showing one card's information.
+/// It should include one card's all the information here.
 class CardInfoPage extends StatefulWidget {
 
   @override
@@ -13,22 +13,22 @@ class CardInfoPage extends StatefulWidget {
 
 class CardInfoState extends State<CardInfoPage> {
 
-  // This is the card info class for storing card info
-  CardInfo _cardInfo;
-
   @override
   Widget build(BuildContext context) {
+    dynamic args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
+          color: Colors.black,
         ),
-        //Todo: Add more UI for App bar here
+        //Todo: Add more UI for App bar from here
       ),
-      //Todo: Add more UI about Card Info here
+      //Todo: Add more UI about Card Info body from here
     );
   }
 }
