@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:membership_card/model/card_count.dart';
 import 'package:membership_card/model/card_model.dart';
+import 'package:membership_card/network/client.dart';
 import 'package:membership_card/pages/add_cards_with_camera.dart';
 import 'package:membership_card/pages/add_cards_with_number.dart';
 import 'package:membership_card/pages/card_info.dart';
@@ -37,16 +38,7 @@ class AllCardsPageState extends State<AllCardsPage> {
 
   // These are the network variables for network connection
   Response res;
-  Dio dio = Dio(
-    // This is the base options for Dio client to connect to server
-    BaseOptions(
-      baseUrl: "129.204.110.90:8080",
-      connectTimeout: 3000,
-      receiveTimeout: 3000,
-      receiveDataWhenStatusError: false,
-      sendTimeout: 3000,
-    ),
-  );
+  Dio dio = initDio();
 
   void _getCardInfo() async {
     //Todo: Lost API from backend
