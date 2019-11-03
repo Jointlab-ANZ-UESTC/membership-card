@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:membership_card/model/card_count.dart';
 import 'package:membership_card/model/card_model.dart';
+import 'package:membership_card/network/client.dart';
 import 'package:membership_card/pages/add_cards_with_camera.dart';
 import 'package:membership_card/pages/add_cards_with_number.dart';
 import 'package:membership_card/pages/card_info.dart';
@@ -37,17 +38,7 @@ class AllCardsPageState extends State<AllCardsPage> {
 
   // These are the network variables for network connection
   Response res;
-  Dio dio = Dio(
-    // This is the base options for Dio client to connect to server
-    BaseOptions(
-      //Todo: Need to get Server URL first
-      baseUrl: "129.204.110.90:8080",
-      connectTimeout: 3000,
-      receiveTimeout: 3000,
-      receiveDataWhenStatusError: false,
-      sendTimeout: 3000,
-    ),
-  );
+  Dio dio = initDio();
 
   void _getCardInfo() async {
     //Todo: Lost API from backend
@@ -124,10 +115,6 @@ class AllCardsPageState extends State<AllCardsPage> {
                 switch (value) {
                   case "scan" :
                     Navigator.of(context).pushNamed("/add/camera");
-                    //Todo: This is only a test, will delete in the future
-                    counter.cardList.add(CardInfo(
-                      cardName: "MyCard"
-                    ));
                     break;
                   case "number" :
                     Navigator.of(context).pushNamed("/add/number");
@@ -190,7 +177,7 @@ class AllCardsPageState extends State<AllCardsPage> {
                   footer: Container(
                     color: Colors.transparent,
                     child: Text(
-                      counter.cardList.elementAt(index).cardName,
+                      counter.cardList.elementAt(index).cardId,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -207,7 +194,7 @@ class AllCardsPageState extends State<AllCardsPage> {
                       );},
                     child: Text(
                       //Todo: It should be gotten from net
-                      counter.cardList.elementAt(index).cardName,
+                      counter.cardList.elementAt(index).cardId,
                       style: TextStyle(
                         fontSize: 20.0,
                       ),
