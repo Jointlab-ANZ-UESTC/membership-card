@@ -1,33 +1,75 @@
 import 'package:flutter/material.dart';
 
-/// This is the Add_Card Page Class especially for adding one card
-/// If user wants to add one card, it needs to go into this page
-/// and write some information such as card number and card name to
-/// finish the card creating procedure
+import 'package:flutter/cupertino.dart';
+import 'package:membership_card/model/card_count.dart';
+import 'package:membership_card/model/card_model.dart';
+import 'package:provider/provider.dart';
+
 class AddCardWithNumberPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    return AddCardWithNumberState();
-  }
+  State<StatefulWidget> createState() => AddCardWithNumberPageState();
 }
 
-class AddCardWithNumberState extends State<AddCardWithNumberPage> {
+class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
+
+  //card control
+  var cardController = TextEditingController();
+
+  //card type control
+  var cardTypeController = TextEditingController();
+  //Todo: Missing Remark Controller because every card has a remark attr
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         leading: IconButton(
-          onPressed: () {
+          onPressed: (){
             Navigator.of(context).pop();
           },
           icon: Icon(Icons.arrow_back),
           color: Colors.black,
         ),
-        //Todo: Add more UI for App bar
+        backgroundColor: Colors.white,
       ),
-      //Todo: Add more UI and interaction for this Add_Card Page
+      body: Column(
+        children: <Widget>[
+          // card input
+          TextField(
+            controller: cardController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.all(10.0),
+              icon: Icon(Icons.credit_card),
+              labelText: 'Please enter you cardID',
+            ),
+            autofocus: false,
+          ),
+          //card type input
+          TextField(
+            controller: cardTypeController,
+            keyboardType: TextInputType.text,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.all(10.0),
+              icon: Icon(Icons.calendar_view_day),
+              labelText: 'Please enter your cardtype',
+            ),
+            autofocus: false,),
+          Consumer<CardCounter>(
+            builder: (context, counter, child) => RaisedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                counter.addCard(CardInfo(
+                  cardController.value.text,
+                  cardTypeController.value.text,
+                  //Todo: Lost remark controller
+                ));
+              },
+              child: Text('Add and return'),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
