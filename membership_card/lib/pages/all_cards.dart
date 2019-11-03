@@ -15,7 +15,7 @@ import 'package:dio/dio.dart';
 /// It shows all the cards users created and users can also add cards
 /// in this page. Every Card is called [CardInfo].
 /// One page showed four cards, every card has its information including
-/// cardName, cardStore, cardNotes
+/// [CardInfo.cardId], [CardInfo.cardType], [CardInfo.remark]
 /// When users click one card, it will go into the [CardInfoPage] which
 /// contains all detailed information one card has.
 /// Moreover, on the top-left users can click menu button to get [HelpPage]
@@ -43,8 +43,8 @@ class AllCardsPageState extends State<AllCardsPage> {
   void _getCardInfo() async {
     //Todo: Lost API from backend
     res = await dio.get("/api/cards");
-    Map<String, dynamic> data = jsonDecode(res.data.toString());
-    Provider.of<CardCounter>(context).cardList = data["cardList"];
+    Map<String, dynamic> json = jsonDecode(res.data.toString());
+    Provider.of<CardCounter>(context).cardList = json["cardList"];
   }
 
   @override
@@ -76,7 +76,7 @@ class AllCardsPageState extends State<AllCardsPage> {
             },
 
             //Todo: Icon should be redesigned because of the Picture
-            icon: Icon(Icons.account_balance, color: Colors.black, size: 32.0,)
+            icon: Icon(Icons.menu, color: Colors.black, size: 32.0,)
         ),
         title: Text(
           "GoWallet",
@@ -93,7 +93,7 @@ class AllCardsPageState extends State<AllCardsPage> {
           Consumer<CardCounter>(
             builder: (context, counter, child) => PopupMenuButton(
               offset: Offset(0, AppBar().preferredSize.height),
-              itemBuilder: (_) => <PopupMenuItem<String>> [
+              itemBuilder: (_) => <PopupMenuEntry<String>> [
                 PopupMenuItem(
                  child: ListTile(
                    leading: Icon(Icons.camera),
@@ -102,6 +102,7 @@ class AllCardsPageState extends State<AllCardsPage> {
                   ),
                   value: "scan",
                 ),
+                PopupMenuDivider(),
                 PopupMenuItem(
                   child: ListTile(
                     leading: Icon(Icons.title),
@@ -165,7 +166,7 @@ class AllCardsPageState extends State<AllCardsPage> {
                     ),
                     title: Text(
                       //Todo: should be gotten from net
-                      "Starbuck",
+                      counter.cardList.elementAt(index).cardType,
                       style: TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
@@ -177,7 +178,8 @@ class AllCardsPageState extends State<AllCardsPage> {
                   footer: Container(
                     color: Colors.transparent,
                     child: Text(
-                      counter.cardList.elementAt(index).cardId,
+                      counter.cardList.elementAt(index).remark == null?
+                      "" : counter.cardList.elementAt(index).remark,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -188,7 +190,7 @@ class AllCardsPageState extends State<AllCardsPage> {
                       //Todo: Should go into the Card Info Page, and the args should be discussed
                       Navigator.of(context).pushNamed(
                         "/cardinfo",
-                        arguments: {
+                        arguments: <String, dynamic>{
                           "index" : index
                         },
                       );},
