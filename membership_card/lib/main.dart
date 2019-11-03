@@ -40,8 +40,8 @@ class GoWallet extends StatelessWidget {
 
         // routes defined all the page routes of our App
         routes: {
-          "/add/number" : (_) => AddCardWithNumberPage(),
-          "/add/camera" : (_) => AddCardWithCameraPage(),
+          "/addnumber" : (_) => AddCardWithNumberPage(),
+          "/addcamera" : (_) => AddCardWithCameraPage(),
           "/cardinfo" : (_) => CardInfoPage(),
           "/settings" : (_) => SettingsPage(),
           "/search" : (_) => SearchPage(),

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:membership_card/model/card_model.dart';
 
@@ -17,6 +15,7 @@ class CardCounter extends ChangeNotifier {
 
   void deleteCard(CardInfo cardInfo) {
     bool isRemoved = _cardList.remove(cardInfo);
-    if (!isRemoved) throw new Exception("Card Remove failed");
+    if (!isRemoved) throw "Card Remove failed";
+    notifyListeners();
   }
 }

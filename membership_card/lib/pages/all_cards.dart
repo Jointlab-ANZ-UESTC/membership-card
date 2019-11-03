@@ -40,6 +40,7 @@ class AllCardsPageState extends State<AllCardsPage> {
   Response res;
   Dio dio = initDio();
 
+  // ignore: unused_element
   void _getCardInfo() async {
     //Todo: Lost API from backend
     res = await dio.get("/api/cards");
@@ -49,7 +50,7 @@ class AllCardsPageState extends State<AllCardsPage> {
 
   @override
   Widget build(BuildContext context) {
-    _getCardInfo();
+//    _getCardInfo();
 
     return Scaffold(
 
@@ -115,10 +116,10 @@ class AllCardsPageState extends State<AllCardsPage> {
               onSelected: (value) {
                 switch (value) {
                   case "scan" :
-                    Navigator.of(context).pushNamed("/add/camera");
+                    Navigator.of(context).pushNamed("/addcamera");
                     break;
                   case "number" :
-                    Navigator.of(context).pushNamed("/add/number");
+                    Navigator.of(context).pushNamed("/addnumber");
                     break;
                 }
                },
@@ -130,8 +131,8 @@ class AllCardsPageState extends State<AllCardsPage> {
 
       body: Consumer<CardCounter>(
         builder:(context, counter, child) {
-          return counter.cardList.length == 0 ?
-          Center(
+          if (counter.cardList.length == 0) {
+            return Center(
             child: Text(
               "Card Now Empty",
               textAlign: TextAlign.center,
@@ -140,7 +141,9 @@ class AllCardsPageState extends State<AllCardsPage> {
                 color: Colors.grey
               )
             ),
-          ) : GridView.builder(
+          );
+          } else {
+            return GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               // It means how many cards one row can contain
               crossAxisCount: 1,
@@ -154,60 +157,130 @@ class AllCardsPageState extends State<AllCardsPage> {
 
             // This is the builder for Card Widget building
             itemBuilder: (BuildContext context, int index) {
+
+              var cardInfo = counter.cardList.elementAt(index);
+              var cardKey = ObjectKey(cardInfo);
+
               return Padding(
                 padding: const EdgeInsets.all(1.0),
-                child: GridTile(
-
-                  //Todo: should be updated when UI gives pics
-                  header: ListTile(
-                    leading: Icon(
-                      Icons.account_balance_wallet,
-                      color: Colors.deepOrange,
-                    ),
-                    title: Text(
-                      //Todo: should be gotten from net
-                      counter.cardList.elementAt(index).cardType,
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.italic
+                child: GestureDetector(
+                  onLongPress: (){
+                    Navigator.of(context).push(
+                      PopupDeleteRoute(args: <String, dynamic>{
+                        "cardInfo" : cardInfo,
+                      }),
+                    );
+                  },
+                  child: GridTile(
+                    key: cardKey,
+                    //Todo: should be updated when UI gives pics
+                    header: ListTile(
+                      leading: Icon(
+                        Icons.account_balance_wallet,
+                        color: Colors.deepOrange,
+                      ),
+                      title: Text(
+                        //Todo: should be gotten from net
+                        cardInfo.cardType,
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic
+                        ),
                       ),
                     ),
-                  ),
 
-                  footer: Container(
-                    color: Colors.transparent,
-                    child: Text(
-                      counter.cardList.elementAt(index).remark == null?
-                      "" : counter.cardList.elementAt(index).remark,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-
-                  child: RaisedButton(
-                    color: Colors.white,
-                    onPressed: () {
-                      //Todo: Should go into the Card Info Page, and the args should be discussed
-                      Navigator.of(context).pushNamed(
-                        "/cardinfo",
-                        arguments: <String, dynamic>{
-                          "index" : index
-                        },
-                      );},
-                    child: Text(
-                      //Todo: It should be gotten from net
-                      counter.cardList.elementAt(index).cardId,
-                      style: TextStyle(
-                        fontSize: 20.0,
+                    footer: Container(
+                      color: Colors.transparent,
+                      child: Text(
+                        cardInfo.remark == null?
+                        "" : cardInfo.remark,
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
+                    ),
+
+                    child: RaisedButton(
+                      color: Colors.white,
+                      onPressed: () {
+                        //Todo: Should go into the Card Info Page, and the args should be discussed
+                        Navigator.of(context).pushNamed(
+                          "/cardinfo",
+                          arguments: <String, dynamic>{
+                            "cardId"   : cardInfo.cardId,
+                            "cardType" : cardInfo.cardType,
+                            "remark"   : cardInfo.remark,
+                            "key"      : cardKey
+                          },
+                        );},
+                      child: Text(
+                        cardInfo.cardId,
+                        style: TextStyle(
+                          fontSize: 20.0,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                 )
               );
             },
-          );}
+          );
+          }}
       )
     );
   }
+}
+
+class PopupDeleteRoute extends PopupRoute {
+
+  Map<String, dynamic> args;
+
+  PopupDeleteRoute({this.args});
+
+  @override
+  Color get barrierColor => null;
+
+  @override
+  bool get barrierDismissible => false;
+
+  @override
+  String get barrierLabel => null;
+
+  @override
+  Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+    return Consumer<CardCounter>(
+      builder: (context, counter, child) => AlertDialog(
+        title: Text("Delete this card?"),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: (){
+              counter.deleteCard(args["cardInfo"]);
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              "Yes",
+              style: TextStyle(
+                color: Colors.blue,
+              ),
+            ),
+          ),
+          FlatButton(
+            onPressed: (){
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              "No",
+              style: TextStyle(
+                color: Colors.blue,
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  @override
+  Duration get transitionDuration => Duration(milliseconds: 300);
+
 }
