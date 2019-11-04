@@ -91,8 +91,7 @@ class AllCardsPageState extends State<AllCardsPage> {
         backgroundColor: Colors.white,
 
         actions: <Widget>[
-          Consumer<CardCounter>(
-            builder: (context, counter, child) => PopupMenuButton(
+          PopupMenuButton(
               offset: Offset(0, AppBar().preferredSize.height),
               itemBuilder: (_) => <PopupMenuEntry<String>> [
                 PopupMenuItem(
@@ -125,7 +124,6 @@ class AllCardsPageState extends State<AllCardsPage> {
                },
               icon: Icon(Icons.add, color: Colors.black, size: 32.0,),
             )
-          ),
         ]
       ),
 
@@ -162,7 +160,7 @@ class AllCardsPageState extends State<AllCardsPage> {
               var cardKey = ObjectKey(cardInfo);
 
               return Padding(
-                padding: const EdgeInsets.all(1.0),
+                padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onLongPress: (){
                     counter.chooseOneCard(index);
@@ -171,16 +169,15 @@ class AllCardsPageState extends State<AllCardsPage> {
                     key: cardKey,
                     //Todo: should be updated when UI gives pics
                     header: ListTile(
-                      leading: Icon(
-                        Icons.account_balance_wallet,
-                        color: Colors.deepOrange,
-                      ),
+                      leading: Icon(Icons.account_balance_wallet,
+                          color: Colors.deepOrange,
+                        ),
                       title: Text(
                         cardInfo.cardType,
                         style: TextStyle(
                           fontSize: 20.0,
                           fontWeight: FontWeight.bold,
-                          fontStyle: FontStyle.italic
+                          fontStyle: FontStyle.italic,
                         ),
                       ),
                     ),
@@ -228,11 +225,11 @@ class AllCardsPageState extends State<AllCardsPage> {
 
 /// This is the route for popping up one [AlertDialog]
 /// when users want to delete one [CardInfo]
-class PopupDeleteRoute extends PopupRoute {
+class PopupCardDeleteRoute extends PopupRoute {
 
   Map<String, dynamic> args;
 
-  PopupDeleteRoute({this.args});
+  PopupCardDeleteRoute({this.args});
 
   @override
   Color get barrierColor => null;
@@ -249,7 +246,7 @@ class PopupDeleteRoute extends PopupRoute {
       builder: (context, counter, child) => AlertDialog(
         title: Text("Delete this card?"),
         actions: <Widget>[
-          FlatButton(
+          SimpleDialogOption(
             onPressed: (){
               counter.deleteCard(args["cardInfo"]);
               Navigator.of(context).pop();
@@ -261,7 +258,7 @@ class PopupDeleteRoute extends PopupRoute {
               ),
             ),
           ),
-          FlatButton(
+          SimpleDialogOption(
             onPressed: (){
               Navigator.of(context).pop();
             },
