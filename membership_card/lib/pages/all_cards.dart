@@ -165,11 +165,7 @@ class AllCardsPageState extends State<AllCardsPage> {
                 padding: const EdgeInsets.all(1.0),
                 child: GestureDetector(
                   onLongPress: (){
-                    Navigator.of(context).push(
-                      PopupDeleteRoute(args: <String, dynamic>{
-                        "cardInfo" : cardInfo,
-                      }),
-                    );
+                    counter.chooseOneCard(index);
                   },
                   child: GridTile(
                     key: cardKey,
@@ -180,7 +176,6 @@ class AllCardsPageState extends State<AllCardsPage> {
                         color: Colors.deepOrange,
                       ),
                       title: Text(
-                        //Todo: should be gotten from net
                         cardInfo.cardType,
                         style: TextStyle(
                           fontSize: 20.0,
@@ -231,6 +226,8 @@ class AllCardsPageState extends State<AllCardsPage> {
   }
 }
 
+/// This is the route for popping up one [AlertDialog]
+/// when users want to delete one [CardInfo]
 class PopupDeleteRoute extends PopupRoute {
 
   Map<String, dynamic> args;
@@ -279,8 +276,6 @@ class PopupDeleteRoute extends PopupRoute {
       ),
     );
   }
-
   @override
   Duration get transitionDuration => Duration(milliseconds: 300);
-
 }

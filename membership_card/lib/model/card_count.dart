@@ -18,4 +18,11 @@ class CardCounter extends ChangeNotifier {
     if (!isRemoved) throw "Card Remove failed";
     notifyListeners();
   }
+
+  void chooseOneCard(int index) {
+    if (index < _cardList.length) {
+      _cardList.elementAt(index).chooseOrNotChoose();
+      notifyListeners();
+    }
+  }
 }
