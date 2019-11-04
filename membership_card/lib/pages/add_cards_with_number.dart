@@ -1,5 +1,8 @@
+///This page is the add card page.
+///The user can jump to this page by clicking the Add button in the main page, and enter the user's card number,
+///card type and card notes here. After adding, click the back button
 import 'package:flutter/material.dart';
-
+import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:membership_card/model/card_count.dart';
 import 'package:membership_card/model/card_model.dart';
@@ -12,19 +15,35 @@ class AddCardWithNumberPage extends StatefulWidget {
 
 class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
 
-  //card control
-  var cardController = TextEditingController();
+  ///Force the page to remain vertical
+  void initState() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown
+    ]);
+  }
 
-  //card type control
-  var cardTypeController = TextEditingController();
-  //Todo: Missing Remark Controller because every card has a remark attr
+  ///Destroy vertical lock
+  void dispose() {
+    SystemChrome.setPreferredOrientations([]);
+    super.dispose();
+  }
+
+  ///card control
+  TextEditingController cardController = TextEditingController();
+
+  ///card type control
+  TextEditingController cardTypeController = TextEditingController();
+
+  ///card remark control
+  TextEditingController cardRemarkController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: (){
+          onPressed: () {
             Navigator.of(context).pop();
           },
           icon: Icon(Icons.arrow_back),
@@ -55,18 +74,29 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
               labelText: 'Please enter your cardtype',
             ),
             autofocus: false,),
-          Consumer<CardCounter>(
-            builder: (context, counter, child) => RaisedButton(
-              onPressed: () {
-                Navigator.pop(context);
-                counter.addCard(CardInfo(
-                  cardController.value.text,
-                  cardTypeController.value.text,
-                  //Todo: Lost remark controller
-                ));
-              },
-              child: Text('Add and return'),
+          TextField(
+            controller: cardRemarkController,
+            keyboardType: TextInputType.text,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.all(10.0),
+              icon: Icon(Icons.rate_review),
+              labelText: 'Please enter you card remark',
             ),
+            autofocus: false,
+          ),
+          Consumer<CardCounter>(
+            builder: (context, counter, child) =>
+                RaisedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    counter.addCard(CardInfo(
+                      cardController.value.text,
+                      cardTypeController.value.text,
+                      cardRemarkController.value.text,
+                    ));
+                  },
+                  child: Text('Add and return'),
+                ),
           ),
         ],
       ),

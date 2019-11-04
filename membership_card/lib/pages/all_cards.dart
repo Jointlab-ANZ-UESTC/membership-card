@@ -48,231 +48,63 @@ class AllCardsPageState extends State<AllCardsPage> {
     Provider.of<CardCounter>(context).cardList = json["cardList"];
   }
 
+  Widget _buildList(BuildContext context, int index) => Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Container(
+      decoration: FlutterLogoDecoration(),
+      child: Material(
+        borderRadius: BorderRadius.circular(10),
+        child: Consumer<CardCounter>(
+          builder: (context, counter, child) => RaisedButton(
+            onPressed: (){
+              Navigator.of(context).pushNamed("/cardinfo",
+                arguments: {
+                  "cardInfo" : counter.cardList.elementAt(index)
+                  //Todo: Start here
+                }
+              );
+            },
+          ),
+        ),
+      ),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
 //    _getCardInfo();
 
     return Scaffold(
 
-      // App Bar lying on the top of the app
-      appBar: AppBar(
-        // PopupMenuButton is used for popping one menu on the click button
-        leading: PopupMenuButton(
-            offset: Offset(0, AppBar().preferredSize.height),
-            itemBuilder: (_) => <PopupMenuItem<String>>[
-              PopupMenuItem(
-                child: ListTile(
-                  leading: Icon(Icons.help),
-                  title: Text("Help"),
-                  contentPadding: EdgeInsets.symmetric(vertical: 4.0),
-                ),
-                value: "help",)
-            ],
-            onSelected: (value) {
-              switch (value) {
-                case "help" :
-                  Navigator.of(context).pushNamed("/help");
-                  break;
-              }
-            },
+      //Todo: AppBar may be updated in the future, but now we don't do this
 
-            //Todo: Icon should be redesigned because of the Picture
-            icon: Icon(Icons.menu, color: Colors.black, size: 32.0,)
-        ),
-        title: Text(
-          "GoWallet",
-          textAlign: TextAlign.justify,
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            expandedHeight: MediaQuery.of(context).size.height * 300 / 1920,
+            flexibleSpace: FlexibleSpaceBar(
+              titlePadding: EdgeInsets.only(left: 24, bottom: 30),
+              title: Text(
+                "Card bag",
+                style: TextStyle(
+                  fontFamily: "msyh",
+                  fontSize: 32.0,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            backgroundColor: Colors.white,
           ),
-        ),
-
-        backgroundColor: Colors.white,
-
-        actions: <Widget>[
-          PopupMenuButton(
-              offset: Offset(0, AppBar().preferredSize.height),
-              itemBuilder: (_) => <PopupMenuEntry<String>> [
-                PopupMenuItem(
-                 child: ListTile(
-                   leading: Icon(Icons.camera),
-                   title: Text("camera"),
-                   contentPadding: EdgeInsets.symmetric(vertical: 4.0),
-                  ),
-                  value: "scan",
-                ),
-                PopupMenuDivider(),
-                PopupMenuItem(
-                  child: ListTile(
-                    leading: Icon(Icons.title),
-                    title: Text("hand"),
-                    contentPadding: EdgeInsets.symmetric(vertical: 4.0),
-                  ),
-                  value: "number",
-                )
-              ],
-              onSelected: (value) {
-                switch (value) {
-                  case "scan" :
-                    Navigator.of(context).pushNamed("/addcamera");
-                    break;
-                  case "number" :
-                    Navigator.of(context).pushNamed("/addnumber");
-                    break;
-                }
-               },
-              icon: Icon(Icons.add, color: Colors.black, size: 32.0,),
-            )
-        ]
-      ),
-
-      body: Consumer<CardCounter>(
-        builder:(context, counter, child) {
-          if (counter.cardList.length == 0) {
-            return Center(
-            child: Text(
-              "Card Now Empty",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 32.0,
-                color: Colors.grey
+          Consumer<CardCounter>(
+            builder: (context, counter, child) => SliverList(
+              delegate: SliverChildBuilderDelegate(
+                _buildList,
+                childCount: 2,
               )
-            ),
-          );
-          } else {
-            return GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              // It means how many cards one row can contain
-              crossAxisCount: 1,
-
-              // It means width : height
-              childAspectRatio: 2.6,
-            ),
-
-            // it is defined by how many cards one user created
-            itemCount: counter.cardList.length,
-
-            // This is the builder for Card Widget building
-            itemBuilder: (BuildContext context, int index) {
-
-              var cardInfo = counter.cardList.elementAt(index);
-              var cardKey = ObjectKey(cardInfo);
-
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onLongPress: (){
-                    counter.chooseOneCard(index);
-                  },
-                  child: GridTile(
-                    key: cardKey,
-                    //Todo: should be updated when UI gives pics
-                    header: ListTile(
-                      leading: Icon(Icons.account_balance_wallet,
-                          color: Colors.deepOrange,
-                        ),
-                      title: Text(
-                        cardInfo.cardType,
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ),
-
-                    footer: Container(
-                      color: Colors.transparent,
-                      child: Text(
-                        cardInfo.remark == null?
-                        "" : cardInfo.remark,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-
-                    child: RaisedButton(
-                      color: Colors.white,
-                      onPressed: () {
-                        //Todo: Should go into the Card Info Page, and the args should be discussed
-                        Navigator.of(context).pushNamed(
-                          "/cardinfo",
-                          arguments: <String, dynamic>{
-                            "cardId"   : cardInfo.cardId,
-                            "cardType" : cardInfo.cardType,
-                            "remark"   : cardInfo.remark,
-                            "key"      : cardKey
-                          },
-                        );},
-                      child: Text(
-                        cardInfo.cardId,
-                        style: TextStyle(
-                          fontSize: 20.0,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                )
-              );
-            },
-          );
-          }}
-      )
-    );
-  }
-}
-
-/// This is the route for popping up one [AlertDialog]
-/// when users want to delete one [CardInfo]
-class PopupCardDeleteRoute extends PopupRoute {
-
-  Map<String, dynamic> args;
-
-  PopupCardDeleteRoute({this.args});
-
-  @override
-  Color get barrierColor => null;
-
-  @override
-  bool get barrierDismissible => false;
-
-  @override
-  String get barrierLabel => null;
-
-  @override
-  Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-    return Consumer<CardCounter>(
-      builder: (context, counter, child) => AlertDialog(
-        title: Text("Delete this card?"),
-        actions: <Widget>[
-          SimpleDialogOption(
-            onPressed: (){
-              counter.deleteCard(args["cardInfo"]);
-              Navigator.of(context).pop();
-            },
-            child: Text(
-              "Yes",
-              style: TextStyle(
-                color: Colors.blue,
-              ),
-            ),
-          ),
-          SimpleDialogOption(
-            onPressed: (){
-              Navigator.of(context).pop();
-            },
-            child: Text(
-              "No",
-              style: TextStyle(
-                color: Colors.blue,
-              ),
             ),
           )
         ],
-      ),
+      )
     );
   }
-  @override
-  Duration get transitionDuration => Duration(milliseconds: 300);
 }
