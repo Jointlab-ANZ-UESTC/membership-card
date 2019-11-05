@@ -133,7 +133,7 @@ class AllCardsPageState extends State<AllCardsPage> {
         builder:(context, counter, child) {
           if (counter.cardList.length == 0) {
             return Center(
-            child: Text(
+              child: Text(
               "Card Now Empty",
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -204,6 +204,7 @@ class AllCardsPageState extends State<AllCardsPage> {
                       onPressed: () {
                         //Todo: Should go into the Card Info Page, and the args should be discussed
                         Navigator.of(context).pushNamed(
+
                           "/cardinfo",
                           arguments: <String, dynamic>{
                             "cardId"   : cardInfo.cardId,
