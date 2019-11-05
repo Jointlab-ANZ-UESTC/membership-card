@@ -27,10 +27,12 @@ class CardInfo extends ChangeNotifier{
   String _cardType;
   String _remark;
   bool _isChosen = false;
+  Key _cardKey = UniqueKey();
 
   String get cardId => _cardId;
   String get cardType => _cardType;
   String get remark => _remark;
+  Key get cardKey => _cardKey;
 
   CardInfo([this._cardId, this._cardType, this._remark]);
 

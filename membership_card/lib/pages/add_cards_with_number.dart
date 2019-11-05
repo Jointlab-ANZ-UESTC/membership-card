@@ -22,9 +22,8 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
       DeviceOrientation.portraitDown
     ]);
   }
-
   ///Destroy vertical lock
-  void dispose() {
+  void dispose(){
     SystemChrome.setPreferredOrientations([]);
     super.dispose();
   }
@@ -40,10 +39,11 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () {
+          onPressed: (){
             Navigator.of(context).pop();
           },
           icon: Icon(Icons.arrow_back),
@@ -65,7 +65,7 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
             autofocus: false,
           ),
           //card type input
-          TextField(
+          TextField (
             controller: cardTypeController,
             keyboardType: TextInputType.text,
             decoration: InputDecoration(
@@ -85,18 +85,17 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
             autofocus: false,
           ),
           Consumer<CardCounter>(
-            builder: (context, counter, child) =>
-                RaisedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    counter.addCard(CardInfo(
-                      cardController.value.text,
-                      cardTypeController.value.text,
-                      cardRemarkController.value.text,
-                    ));
-                  },
-                  child: Text('Add and return'),
-                ),
+            builder: (context, counter, child) => RaisedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                counter.addCard(CardInfo(
+                  cardController.value.text,
+                  cardTypeController.value.text,
+                  cardRemarkController.value.text,
+                ));
+              },
+              child: Text('Add and return'),
+            ),
           ),
         ],
       ),

@@ -76,3 +76,6 @@ flutter:
     - family: msyh
       fonts:
         - asset: assets/fonts/msyh.ttf
+    - family: consolas
+      fonts:
+        - asset: assets/fonts/consola.ttf

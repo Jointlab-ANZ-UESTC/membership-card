@@ -25,7 +25,6 @@ import 'package:dio/dio.dart';
 /// cardNumber through bar code, while [AddCardWithNumberPage] needs user to
 /// write the cardNumber on his/her own.
 class AllCardsPage extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() {
     return AllCardsPageState();
@@ -35,7 +34,6 @@ class AllCardsPage extends StatefulWidget {
 /// This is the state related to the [AllCardsPage]
 /// It is the main state of the [AllCardsPage]
 class AllCardsPageState extends State<AllCardsPage> {
-
   // These are the network variables for network connection
   Response res;
   Dio dio = initDio();
@@ -49,26 +47,45 @@ class AllCardsPageState extends State<AllCardsPage> {
   }
 
   Widget _buildList(BuildContext context, int index) => Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Container(
-      decoration: FlutterLogoDecoration(),
-      child: Material(
-        borderRadius: BorderRadius.circular(10),
-        child: Consumer<CardCounter>(
-          builder: (context, counter, child) => RaisedButton(
-            onPressed: (){
-              Navigator.of(context).pushNamed("/cardinfo",
-                arguments: {
-                  "cardInfo" : counter.cardList.elementAt(index)
-                  //Todo: Start here
-                }
-              );
-            },
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          decoration: FlutterLogoDecoration(),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Consumer<CardCounter>(
+              builder: (context, counter, child) => Hero(
+                tag: counter.cardList.elementAt(index).cardKey,
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 137.1,
+                  child: RaisedButton(
+                      onPressed: () {
+                        var cardInfo = counter.cardList.elementAt(index);
+                        Navigator.of(context).pushNamed("/cardinfo", arguments: {
+                          "cardId": cardInfo.cardId,
+                          "cardType": cardInfo.cardType,
+                          "remark": cardInfo.remark,
+                          "key": cardInfo.cardKey,
+                        });
+                      },
+                      child: Container(
+                        alignment: Alignment.bottomLeft,
+                        decoration: FlutterLogoDecoration(),
+                        child: Text(
+                          "${counter.cardList.elementAt(index).cardType}\n" +
+                              "${counter.cardList.elementAt(index).cardId}",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "consolas",
+                              fontSize: 28.0),
+                        ),
+                      )),
+                ),
+              ),
+            ),
           ),
         ),
-      ),
-    ),
-  );
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -76,35 +93,82 @@ class AllCardsPageState extends State<AllCardsPage> {
 
     return Scaffold(
 
-      //Todo: AppBar may be updated in the future, but now we don't do this
+        //Todo: AppBar may be updated in the future, but now we don't do this
 
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            expandedHeight: MediaQuery.of(context).size.height * 300 / 1920,
-            flexibleSpace: FlexibleSpaceBar(
-              titlePadding: EdgeInsets.only(left: 24, bottom: 30),
-              title: Text(
-                "Card bag",
-                style: TextStyle(
-                  fontFamily: "msyh",
-                  fontSize: 32.0,
-                  color: Colors.black,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          backgroundColor: Colors.black,
+          child: PopupMenuButton(
+            icon: Icon(
+              Icons.add,
+              size: 48.0,
+            ),
+            padding: EdgeInsets.all(0),
+            itemBuilder: (context) => <PopupMenuEntry<String>>[
+              PopupMenuItem(
+                child: ListTile(
+                  leading: Icon(Icons.text_fields),
+                  title: Text("Manual"),
+                ),
+                value: "manual",
+              ),
+              PopupMenuDivider(),
+              PopupMenuItem(
+                child: ListTile(
+                  leading: Icon(Icons.camera),
+                  title: Text("Camera"),
+                ),
+                value: "camera",
+              ),
+              PopupMenuDivider(),
+              PopupMenuItem(
+                child: ListTile(
+                  leading: Icon(Icons.help),
+                  title: Text("Help"),
+                ),
+                value: "help",
+              )
+            ],
+            onSelected: (value) {
+              switch (value) {
+                case "manual":
+                  Navigator.of(context).pushNamed("/addnumber");
+                  break;
+                case "camera":
+                  Navigator.of(context).pushNamed("/addcamera");
+                  break;
+                case "help":
+                  Navigator.of(context).pushNamed("/help");
+                  break;
+              }
+            },
+          ),
+        ),
+        body: CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              expandedHeight: MediaQuery.of(context).size.height * 300 / 1920,
+              flexibleSpace: FlexibleSpaceBar(
+                titlePadding: EdgeInsets.only(left: 24, bottom: 30),
+                title: Text(
+                  "Card bag",
+                  style: TextStyle(
+                    fontFamily: "msyh",
+                    fontSize: 32.0,
+                    color: Colors.black,
+                  ),
                 ),
               ),
+              backgroundColor: Colors.white,
             ),
-            backgroundColor: Colors.white,
-          ),
-          Consumer<CardCounter>(
-            builder: (context, counter, child) => SliverList(
-              delegate: SliverChildBuilderDelegate(
+            Consumer<CardCounter>(
+              builder: (context, counter, child) => SliverList(
+                  delegate: SliverChildBuilderDelegate(
                 _buildList,
-                childCount: 2,
-              )
-            ),
-          )
-        ],
-      )
-    );
+                childCount: counter.cardList.length,
+              )),
+            )
+          ],
+        ));
   }
 }
