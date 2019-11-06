@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:membership_card/model/card_count.dart';
-import 'package:provider/provider.dart';
-import '../model/card_model.dart';
 
 /// This is the Card_Info Page showing one card's information.
 /// It should include one card's all the information here.
@@ -40,7 +37,7 @@ class CardInfoState extends State<CardInfoPage> {
             Text("     "+args["cardType"],
               style: TextStyle(
                 //fontSize: 16.0,
-                color: Colors.black,
+                  color: Colors.black,
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
                   fontStyle: FontStyle.italic
@@ -49,25 +46,24 @@ class CardInfoState extends State<CardInfoPage> {
             ),
           ],
 
-      ),
+        ),
       ),
       //Todo: Add more UI about Card Info body from here
       body: Column(
-      children: <Widget>[
-        Hero(
-          tag: args["key"],
-          child: Image(
-          image: AssetImage("images/anz_card.jpg"),
-          fit: BoxFit.fitWidth,
+        children: <Widget>[
+          Hero(
+            tag: args["key"],
+            child: Image(
+              image: AssetImage("images/anz_card.jpg"),
+              fit: BoxFit.fitWidth,
+            ),
           ),
-        ),
-        FlatButton(
-          child: Text("barcode"),
-          onPressed: () {},
-        )
-      ],
-    ),
+          FlatButton(
+            child: Text("barcode"),
+            onPressed: () {},
+          )
+        ],
+      ),
     );
   }
 }
-
