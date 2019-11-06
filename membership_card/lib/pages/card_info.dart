@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:membership_card/model/card_count.dart';
+import 'package:provider/provider.dart';
+import '../model/card_model.dart';
 
 /// This is the Card_Info Page showing one card's information.
 /// It should include one card's all the information here.
 class CardInfoPage extends StatefulWidget {
+
   @override
   State<StatefulWidget> createState() {
     return CardInfoState();
@@ -10,10 +14,11 @@ class CardInfoPage extends StatefulWidget {
 }
 
 class CardInfoState extends State<CardInfoPage> {
-  @override
-  Widget build(BuildContext context) {
-    Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
 
+  @override
+
+  Widget build(BuildContext context) {
+    dynamic args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -25,25 +30,44 @@ class CardInfoState extends State<CardInfoPage> {
           color: Colors.black,
         ),
         //Todo: Add more UI for App bar from here
-      ),
-      //Todo: Add more UI about Card Info body from here
-      body: Hero(
-          tag: args["key"],
-          child: SizedBox(
-            height: 137.1,
-            child: Container(
-              alignment: Alignment.bottomLeft,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                image: AssetImage("assets/images/anz_card.png"),
-              )),
-              child: Text(
-                "${args["cardType"]}\n" + "${args["cardId"]}",
-                style: TextStyle(
-                    color: Colors.white, fontFamily: "consolas", fontSize: 28.0),
+        title: Row(
+
+          children: <Widget>[
+            Icon(
+              Icons.account_balance_wallet,
+              color: Colors.deepOrange,
+            ),
+            Text("     "+args["cardType"],
+              style: TextStyle(
+                //fontSize: 16.0,
+                color: Colors.black,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.italic
+                //fontWeight: FontWeight.w600),
               ),
             ),
-          )),
+          ],
+
+      ),
+      ),
+      //Todo: Add more UI about Card Info body from here
+      body: Column(
+      children: <Widget>[
+        Hero(
+          tag: args["key"],
+          child: Image(
+          image: AssetImage("images/anz_card.jpg"),
+          fit: BoxFit.fitWidth,
+          ),
+        ),
+        FlatButton(
+          child: Text("barcode"),
+          onPressed: () {},
+        )
+      ],
+    ),
     );
   }
 }
+

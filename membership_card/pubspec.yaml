@@ -48,6 +48,10 @@ flutter:
     - assets/images/anz_card.png
 
   # To add assets to your application, add an assets section, like this:
+  assets:
+    - images/first_image.jpg
+    - images/anz_card.jpg
+    - images/tian_mao_card.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -74,11 +78,3 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-
-  fonts:
-    - family: msyh
-      fonts:
-        - asset: assets/fonts/msyh.ttf
-    - family: consolas
-      fonts:
-        - asset: assets/fonts/consola.ttf
