@@ -1,5 +1,8 @@
+///This page is the add card page.
+///The user can jump to this page by clicking the Add button in the main page, and enter the user's card number,
+///card type and card notes here. After adding, click the back button
 import 'package:flutter/material.dart';
-
+import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:membership_card/model/card_count.dart';
 import 'package:membership_card/model/card_model.dart';
@@ -12,15 +15,31 @@ class AddCardWithNumberPage extends StatefulWidget {
 
 class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
 
-  //card control
-  var cardController = TextEditingController();
+  ///Force the page to remain vertical
+  void initState() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown
+    ]);
+  }
+  ///Destroy vertical lock
+  void dispose(){
+    SystemChrome.setPreferredOrientations([]);
+    super.dispose();
+  }
 
-  //card type control
-  var cardTypeController = TextEditingController();
-  //Todo: Missing Remark Controller because every card has a remark attr
+  ///card control
+  TextEditingController cardController = TextEditingController();
+
+  ///card type control
+  TextEditingController cardTypeController = TextEditingController();
+
+  ///card remark control
+  TextEditingController cardRemarkController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -46,7 +65,7 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
             autofocus: false,
           ),
           //card type input
-          TextField(
+          TextField (
             controller: cardTypeController,
             keyboardType: TextInputType.text,
             decoration: InputDecoration(
@@ -55,6 +74,16 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
               labelText: 'Please enter your cardtype',
             ),
             autofocus: false,),
+          TextField(
+            controller: cardRemarkController,
+            keyboardType: TextInputType.text,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.all(10.0),
+              icon: Icon(Icons.rate_review),
+              labelText: 'Please enter you card remark',
+            ),
+            autofocus: false,
+          ),
           Consumer<CardCounter>(
             builder: (context, counter, child) => RaisedButton(
               onPressed: () {
@@ -62,7 +91,7 @@ class AddCardWithNumberPageState extends State<AddCardWithNumberPage> {
                 counter.addCard(CardInfo(
                   cardController.value.text,
                   cardTypeController.value.text,
-                  //Todo: Lost remark controller
+                  cardRemarkController.value.text,
                 ));
               },
               child: Text('Add and return'),
