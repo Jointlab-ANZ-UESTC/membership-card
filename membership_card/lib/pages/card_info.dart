@@ -28,25 +28,22 @@ class CardInfoState extends State<CardInfoPage> {
       ),
       //Todo: Add more UI about Card Info body from here
       body: Hero(
-        tag: args["key"],
-        child: SizedBox(
-          width: double.infinity,
-          height: 400,
-          child: RaisedButton(
-              onPressed: () {},
-              child: Container(
-                alignment: Alignment.bottomLeft,
-                decoration: FlutterLogoDecoration(),
-                child: Text(
-                  "${args["cardType"]}\n" + "${args["cardId"]}",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: "consolas",
-                      fontSize: 28.0),
-                ),
+          tag: args["key"],
+          child: SizedBox(
+            height: 137.1,
+            child: Container(
+              alignment: Alignment.bottomLeft,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                image: AssetImage("assets/images/anz_card.png"),
               )),
-        ),
-      ),
+              child: Text(
+                "${args["cardType"]}\n" + "${args["cardId"]}",
+                style: TextStyle(
+                    color: Colors.white, fontFamily: "consolas", fontSize: 28.0),
+              ),
+            ),
+          )),
     );
   }
 }

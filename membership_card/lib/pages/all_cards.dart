@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:membership_card/model/card_count.dart';
@@ -38,28 +37,18 @@ class AllCardsPageState extends State<AllCardsPage> {
   Response res;
   Dio dio = initDio();
 
-  // ignore: unused_element
-  void _getCardInfo() async {
-    //Todo: Lost API from backend
-    res = await dio.get("/api/cards");
-    Map<String, dynamic> json = jsonDecode(res.data.toString());
-    Provider.of<CardCounter>(context).cardList = json["cardList"];
-  }
-
   Widget _buildList(BuildContext context, int index) => Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-          decoration: FlutterLogoDecoration(),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: Consumer<CardCounter>(
               builder: (context, counter, child) => Hero(
                 tag: counter.cardList.elementAt(index).cardKey,
                 child: SizedBox(
-                  width: double.infinity,
                   height: 137.1,
-                  child: RaisedButton(
-                      onPressed: () {
+                  child: GestureDetector(
+                    onTap: () {
                         var cardInfo = counter.cardList.elementAt(index);
                         Navigator.of(context).pushNamed("/cardinfo", arguments: {
                           "cardId": cardInfo.cardId,
@@ -68,18 +57,25 @@ class AllCardsPageState extends State<AllCardsPage> {
                           "key": cardInfo.cardKey,
                         });
                       },
-                      child: Container(
-                        alignment: Alignment.bottomLeft,
-                        decoration: FlutterLogoDecoration(),
-                        child: Text(
-                          "${counter.cardList.elementAt(index).cardType}\n" +
-                              "${counter.cardList.elementAt(index).cardId}",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: "consolas",
-                              fontSize: 28.0),
-                        ),
-                      )),
+                    child: Container(
+                      alignment: Alignment.bottomLeft,
+                      padding: EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage("assets/images/anz_card.png"),
+                            fit: BoxFit.fitHeight,
+                          )
+                      ),
+                      child: Text(
+                        "${counter.cardList.elementAt(index).cardType}\n" +
+                            "${counter.cardList.elementAt(index).cardId}",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "consolas",
+                            fontSize: 28.0),
+                      ),
+                    ),
+                  )
                 ),
               ),
             ),
@@ -149,7 +145,7 @@ class AllCardsPageState extends State<AllCardsPage> {
             SliverAppBar(
               expandedHeight: MediaQuery.of(context).size.height * 300 / 1920,
               flexibleSpace: FlexibleSpaceBar(
-                titlePadding: EdgeInsets.only(left: 24, bottom: 30),
+                titlePadding: EdgeInsets.only(left: 6, bottom: 30),
                 title: Text(
                   "Card bag",
                   style: TextStyle(
