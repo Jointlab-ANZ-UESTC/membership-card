@@ -54,9 +54,12 @@ class CardInfoState extends State<CardInfoPage> {
       //Todo: Add more UI about Card Info body from here
       body: Column(
       children: <Widget>[
-        Image(
-        image: AssetImage("images/anz_card.jpg"),
-        fit: BoxFit.fitWidth,
+        Hero(
+          tag: args["key"],
+          child: Image(
+          image: AssetImage("images/anz_card.jpg"),
+          fit: BoxFit.fitWidth,
+          ),
         ),
         FlatButton(
           child: Text("barcode"),

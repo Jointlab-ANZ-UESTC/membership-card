@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:membership_card/model/card_count.dart';
@@ -40,13 +39,51 @@ class AllCardsPageState extends State<AllCardsPage> {
   Response res;
   Dio dio = initDio();
 
-  // ignore: unused_element
-  void _getCardInfo() async {
-    //Todo: Lost API from backend
-    res = await dio.get("/api/cards");
-    Map<String, dynamic> json = jsonDecode(res.data.toString());
-    Provider.of<CardCounter>(context).cardList = json["cardList"];
-  }
+  Widget _buildList(BuildContext context, int index) => Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Consumer<CardCounter>(
+              builder: (context, counter, child) => Hero(
+                tag: counter.cardList.elementAt(index).cardKey,
+                child: SizedBox(
+                  height: 137.1,
+                  child: GestureDetector(
+                    onTap: () {
+                        var cardInfo = counter.cardList.elementAt(index);
+                        Navigator.of(context).pushNamed("/cardinfo", arguments: {
+                          "cardId": cardInfo.cardId,
+                          "cardType": cardInfo.cardType,
+                          "remark": cardInfo.remark,
+                          "key": cardInfo.cardKey,
+                        });
+                      },
+                    child: Container(
+                      alignment: Alignment.bottomLeft,
+                      padding: EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage("assets/images/anz_card.png"),
+                            fit: BoxFit.fitHeight,
+                          )
+                      ),
+                      child: Text(
+                        "${counter.cardList.elementAt(index).cardType}\n" +
+                            "${counter.cardList.elementAt(index).cardId}",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "consolas",
+                            fontSize: 28.0),
+                      ),
+                    ),
+                  )
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -87,19 +124,18 @@ class AllCardsPageState extends State<AllCardsPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-
-        backgroundColor: Colors.white,
-
-        actions: <Widget>[
-          Consumer<CardCounter>(
-            builder: (context, counter, child) => PopupMenuButton(
-              offset: Offset(0, AppBar().preferredSize.height),
-              itemBuilder: (_) => <PopupMenuEntry<String>> [
-                PopupMenuItem(
-                 child: ListTile(
-                   leading: Icon(Icons.camera),
-                   title: Text("camera"),
-                   contentPadding: EdgeInsets.symmetric(vertical: 4.0),
+        body: CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              expandedHeight: MediaQuery.of(context).size.height * 300 / 1920,
+              flexibleSpace: FlexibleSpaceBar(
+                titlePadding: EdgeInsets.only(left: 6, bottom: 30),
+                title: Text(
+                  "Card bag",
+                  style: TextStyle(
+                    fontFamily: "msyh",
+                    fontSize: 32.0,
+                    color: Colors.black,
                   ),
                   value: "scan",
                 ),
