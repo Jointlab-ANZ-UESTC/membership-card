@@ -18,6 +18,8 @@ class SettingsPage extends StatelessWidget {
         //Todo: Add more UI for the App bar
       ),
       //Todo: Add more UI for settings
+      /// This is the test for github
+      /// commit and update
     );
   }
 }
